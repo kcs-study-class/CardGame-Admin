@@ -1,0 +1,34 @@
+{{define "content"}}
+<h2>メンテナンス予定</h2>
+<div class="card">
+  <h3>新規追加</h3>
+  <p class="muted">期間中はクライアントがタイトルで停止し、メッセージを表示する。</p>
+  <form method="post" action="/maintenance">
+    <p><input type="text" name="message" placeholder="メンテナンスメッセージ" required style="width: 70%"></p>
+    <p>
+      開始 <input type="datetime-local" name="startsAt" required>
+      終了 <input type="datetime-local" name="endsAt" required>
+      <button type="submit">追加</button>
+    </p>
+  </form>
+</div>
+<table>
+  <thead><tr><th>ID</th><th>メッセージ</th><th>期間 (UTC)</th><th></th></tr></thead>
+  <tbody>
+    {{range .Data.Items}}
+    <tr>
+      <td>{{.ID}}</td>
+      <td>{{.Message}}</td>
+      <td class="muted">{{.StartsAt.Format "2006-01-02 15:04"}} 〜 {{.EndsAt.Format "2006-01-02 15:04"}}</td>
+      <td>
+        <form method="post" action="/maintenance/{{.ID}}/delete" class="inline">
+          <button type="submit" class="danger">削除</button>
+        </form>
+      </td>
+    </tr>
+    {{else}}
+    <tr><td colspan="4" class="muted">予定なし</td></tr>
+    {{end}}
+  </tbody>
+</table>
+{{end}}

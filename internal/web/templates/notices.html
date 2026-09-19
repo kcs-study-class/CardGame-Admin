@@ -1,0 +1,35 @@
+{{define "content"}}
+<h2>お知らせ</h2>
+<div class="card">
+  <h3>新規追加</h3>
+  <form method="post" action="/notices">
+    <p><input type="text" name="title" placeholder="タイトル" required style="width: 60%"></p>
+    <p><textarea name="body" placeholder="本文" rows="3" style="width: 90%" required></textarea></p>
+    <p class="muted">期間 (ローカル日時)</p>
+    <p>
+      開始 <input type="datetime-local" name="startsAt" required>
+      終了 <input type="datetime-local" name="endsAt" required>
+      <button type="submit">追加</button>
+    </p>
+  </form>
+</div>
+<table>
+  <thead><tr><th>ID</th><th>タイトル</th><th>期間 (UTC)</th><th></th></tr></thead>
+  <tbody>
+    {{range .Data.Notices}}
+    <tr>
+      <td>{{.ID}}</td>
+      <td>{{.Title}}<br><span class="muted">{{.Body}}</span></td>
+      <td class="muted">{{.StartsAt.Format "2006-01-02 15:04"}} 〜 {{.EndsAt.Format "2006-01-02 15:04"}}</td>
+      <td>
+        <form method="post" action="/notices/{{.ID}}/delete" class="inline">
+          <button type="submit" class="danger">削除</button>
+        </form>
+      </td>
+    </tr>
+    {{else}}
+    <tr><td colspan="4" class="muted">お知らせなし</td></tr>
+    {{end}}
+  </tbody>
+</table>
+{{end}}

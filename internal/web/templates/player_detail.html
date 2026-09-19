@@ -1,0 +1,47 @@
+{{define "content"}}
+{{$p := .Data.Player}}
+<h2>プレイヤー #{{$p.ID}} — {{$p.Name}}</h2>
+<a href="/">← 一覧へ</a>
+
+<div class="card">
+  <table>
+    <tr><th>ID</th><td>{{$p.ID}}</td></tr>
+    <tr><th>名前</th><td>{{$p.Name}}</td></tr>
+    <tr><th>device_id</th><td class="muted">{{$p.DeviceID}}</td></tr>
+    <tr><th>チップ</th><td><strong>{{$p.Chips}}</strong></td></tr>
+    <tr><th>レベル</th><td>{{$p.Level}}</td></tr>
+    <tr><th>作成</th><td class="muted">{{$p.CreatedAt.Format "2006-01-02 15:04:05"}}</td></tr>
+    <tr><th>更新</th><td class="muted">{{$p.UpdatedAt.Format "2006-01-02 15:04:05"}}</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>チップ調整</h3>
+  <p class="muted">増減額を指定 (負の値で減算)。残高と台帳を同時に更新します。</p>
+  <form method="post" action="/players/{{$p.ID}}/adjust">
+    <input type="number" name="delta" placeholder="例: 1000 / -500" required>
+    <input type="text" name="reason" placeholder="理由 (省略時: admin)">
+    <button type="submit">適用</button>
+  </form>
+</div>
+
+<div class="card">
+  <h3>チップ台帳 (新しい順)</h3>
+  <table>
+    <thead><tr><th>ID</th><th>増減</th><th>理由</th><th>match</th><th>日時 (UTC)</th></tr></thead>
+    <tbody>
+      {{range .Data.Transactions}}
+      <tr>
+        <td>{{.ID}}</td>
+        <td class="{{if gt .Delta 0}}pos{{else}}neg{{end}}">{{.Delta}}</td>
+        <td>{{.Reason}}</td>
+        <td class="muted">{{if .RefMatchID}}{{.RefMatchID}}{{else}}-{{end}}</td>
+        <td class="muted">{{.CreatedAt.Format "2006-01-02 15:04:05"}}</td>
+      </tr>
+      {{else}}
+      <tr><td colspan="5" class="muted">台帳なし</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}

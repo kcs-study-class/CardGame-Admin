@@ -1,0 +1,44 @@
+{{define "layout"}}<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CardGame 管理 - {{.Title}}</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #f4f5f7; color: #1a1a2e; }
+    header { background: #16213e; color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 20px; }
+    header h1 { font-size: 16px; margin: 0; }
+    header nav a { color: #a9c0ff; text-decoration: none; margin-right: 16px; font-size: 14px; }
+    header nav a:hover { color: #fff; }
+    main { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+    h2 { font-size: 18px; }
+    table { border-collapse: collapse; width: 100%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #e0e0e0; font-size: 14px; }
+    th { background: #eef1f6; }
+    tr:hover td { background: #f8f9fc; }
+    form.inline { display: inline; }
+    input, textarea { font: inherit; padding: 5px 7px; border: 1px solid #c0c4cc; border-radius: 4px; }
+    button { font: inherit; padding: 5px 12px; border: 0; border-radius: 4px; background: #3f5efb; color: #fff; cursor: pointer; }
+    button.danger { background: #d9534f; }
+    button:hover { opacity: .9; }
+    .card { background: #fff; padding: 16px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.1); margin-bottom: 20px; }
+    .muted { color: #888; font-size: 13px; }
+    .pos { color: #2e7d32; } .neg { color: #c62828; }
+    .flash { background: #e7f5e9; border: 1px solid #a5d6a7; padding: 8px 12px; border-radius: 4px; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CardGame 管理</h1>
+    <nav>
+      <a href="/">プレイヤー</a>
+      <a href="/notices">お知らせ</a>
+      <a href="/maintenance">メンテナンス</a>
+    </nav>
+  </header>
+  <main>
+    {{if .Flash}}<div class="flash">{{.Flash}}</div>{{end}}
+    {{template "content" .}}
+  </main>
+</body>
+</html>{{end}}

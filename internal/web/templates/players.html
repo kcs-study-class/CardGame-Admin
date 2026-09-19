@@ -1,0 +1,27 @@
+{{define "content"}}
+<h2>プレイヤー</h2>
+<form method="get" action="/" class="card">
+  <input type="text" name="q" value="{{.Data.Query}}" placeholder="id / device_id / name で検索">
+  <button type="submit">検索</button>
+</form>
+<table>
+  <thead>
+    <tr><th>ID</th><th>名前</th><th>チップ</th><th>Lv</th><th>device_id</th><th>作成</th><th></th></tr>
+  </thead>
+  <tbody>
+    {{range .Data.Players}}
+    <tr>
+      <td>{{.ID}}</td>
+      <td>{{.Name}}</td>
+      <td>{{.Chips}}</td>
+      <td>{{.Level}}</td>
+      <td class="muted">{{.DeviceID}}</td>
+      <td class="muted">{{.CreatedAt.Format "2006-01-02 15:04"}}</td>
+      <td><a href="/players/{{.ID}}">詳細</a></td>
+    </tr>
+    {{else}}
+    <tr><td colspan="7" class="muted">該当なし</td></tr>
+    {{end}}
+  </tbody>
+</table>
+{{end}}

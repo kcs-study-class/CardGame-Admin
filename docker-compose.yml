@@ -1,0 +1,37 @@
+# CardGame-Admin 単体スタック (admin + mysql)。
+# ゲームサーバー (CardGame-Server) と同じ MySQL を共有する運用では、
+# こちらの mysql は起動せず、admin を CardGame-Server のスタックに相乗りさせる (README 参照)。
+#
+# 起動: docker compose up --build
+# 管理ページ: http://localhost:9090 (Basic 認証 admin / cardgame)
+services:
+  admin:
+    build: .
+    ports:
+      - "9090:9090"
+    environment:
+      ADMIN_ADDR: ":9090"
+      DATABASE_DSN: "root:cardgame@tcp(mysql:3306)/cardgame?parseTime=true&loc=UTC"
+      ADMIN_USER: "admin"
+      ADMIN_PASS: "cardgame"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.4
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: cardgame
+      MYSQL_DATABASE: cardgame
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pcardgame"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  db-data:
