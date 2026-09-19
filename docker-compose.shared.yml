@@ -1,0 +1,27 @@
+# 既存の CardGame-Server スタックの MySQL に相乗りして admin だけを起動する構成。
+# (docker-compose.yml は admin+mysql を自前で立てる単体構成。こちらは共有用)
+#
+# 前提: CardGame-Server 側で `docker compose up -d mysql` 済み
+#       (ネットワーク cardgame-server_default / サービス名 mysql が存在する)
+#
+# 起動: docker compose -f docker-compose.shared.yml up -d --build
+# 管理ページ: http://localhost:9090 (Basic 認証 admin / cardgame)
+services:
+  admin:
+    build: .
+    ports:
+      - "9090:9090"
+    environment:
+      ADMIN_ADDR: ":9090"
+      # 既存 MySQL のサービス名 mysql に接続 (同一ネットワーク内)
+      DATABASE_DSN: "root:cardgame@tcp(mysql:3306)/cardgame?parseTime=true&loc=UTC"
+      ADMIN_USER: "admin"
+      ADMIN_PASS: "cardgame"
+    networks:
+      - cardgame
+
+networks:
+  # CardGame-Server が作成済みのネットワークを外部参照する
+  cardgame:
+    external: true
+    name: cardgame-server_default

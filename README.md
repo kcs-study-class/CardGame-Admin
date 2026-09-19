@@ -51,9 +51,22 @@ docker compose up --build
 # → http://localhost:9090
 ```
 
-### ゲームサーバーのスタックに相乗りさせる (コンテナとして乗せる)
+### 既存の MySQL に相乗りさせる (推奨: コンテナとして乗せる)
 
-CardGame-Server 側の `docker-compose.yml` に次の service を足すと、同じ MySQL を共有して起動できる:
+CardGame-Server 側で MySQL が起動済み (`docker compose up -d mysql`) なら、
+同梱の `docker-compose.shared.yml` で admin だけをそのネットワークに相乗りさせる:
+
+```bash
+docker compose -f docker-compose.shared.yml up -d --build
+# → http://localhost:9090 (既存 MySQL / 既存データに接続)
+```
+
+`docker-compose.shared.yml` は既存ネットワーク `cardgame-server_default` を外部参照し、
+サービス名 `mysql` に接続する (自前で MySQL を立てない = データを共有する)。
+
+### CardGame-Server の docker-compose.yml に直接足す場合
+
+次の service を足しても同じ MySQL を共有して起動できる:
 
 ```yaml
   admin:
